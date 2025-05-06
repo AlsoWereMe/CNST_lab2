@@ -1,0 +1,52 @@
+# checkout.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checkout-config
+data:
+  conf.yaml: |
+    nats:
+      host: nats-service
+      port: 4222
+    # 其他checkout服务配置项...
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: checkout
+  template:
+    metadata:
+      labels:
+        app: checkout
+    spec:
+      containers:
+      - name: checkout
+        image: huajuan6848/checkout:1ab2
+        ports:
+        - containerPort: 8884
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/checkout/conf/dev
+      volumes:
+      - name: config-volume
+        configMap:
+          name: checkout-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkout
+spec:
+  selector:
+    app: checkout
+  ports:
+  - protocol: TCP
+    port: 8884
+    targetPort: 8884

@@ -1,0 +1,49 @@
+# email.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: email-config
+data:
+  conf.yaml: |
+    # email服务配置项...
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: email
+  template:
+    metadata:
+      labels:
+        app: email
+    spec:
+      containers:
+      - name: email
+        image: huajuan6848/email:1ab2
+        ports:
+        - containerPort: 8885
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/email/conf/dev
+      volumes:
+      - name: config-volume
+        configMap:
+          name: email-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: email
+spec:
+  selector:
+    app: email
+  ports:
+  - protocol: TCP
+    port: 8885
+    targetPort: 8885
