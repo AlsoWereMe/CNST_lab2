@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: order
-        image: huajuan6848/order:1ab2
+        image: huajuan6848/order:lab2
         ports:
         - containerPort: 8886
         volumeMounts:

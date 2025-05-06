@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: cart
-        image: huajuan6848/cart:1ab2
+        image: huajuan6848/cart:lab2
         ports:
         - containerPort: 8883
         volumeMounts:

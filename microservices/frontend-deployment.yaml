@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: huajuan6848/frontend:1ab2
+        image: huajuan6848/frontend:lab2
         ports:
         - containerPort: 8080
         volumeMounts:

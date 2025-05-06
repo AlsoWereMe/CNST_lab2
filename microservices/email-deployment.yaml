@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: email
-        image: huajuan6848/email:1ab2
+        image: huajuan6848/email:lab2
         ports:
         - containerPort: 8885
         volumeMounts:

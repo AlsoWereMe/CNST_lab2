@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: product
-        image: huajuan6848/product:1ab2
+        image: huajuan6848/product:lab2
         ports:
         - containerPort: 8881
         volumeMounts:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: checkout
-        image: huajuan6848/checkout:1ab2
+        image: huajuan6848/checkout:lab2
         ports:
         - containerPort: 8884
         volumeMounts:

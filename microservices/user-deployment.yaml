@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: huajuan6848/user:1ab2
+        image: huajuan6848/user:lab2
         ports:
         - containerPort: 8888
         volumeMounts:
