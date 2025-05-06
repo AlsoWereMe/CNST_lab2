@@ -1,17 +1,8 @@
-# payment.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: payment-config
-data:
-  conf.yaml: |
-    # payment服务配置项...
-
----
+# payment-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: payment-deployment
+  name: payment
 spec:
   replicas: 1
   selector:
@@ -28,22 +19,9 @@ spec:
         ports:
         - containerPort: 8887
         volumeMounts:
-        - name: config-volume
+        - name: config
           mountPath: /app/payment/conf/dev
       volumes:
-      - name: config-volume
+      - name: config
         configMap:
           name: payment-config
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: payment
-spec:
-  selector:
-    app: payment
-  ports:
-  - protocol: TCP
-    port: 8887
-    targetPort: 8887

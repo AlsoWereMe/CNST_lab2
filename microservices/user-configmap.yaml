@@ -1,0 +1,15 @@
+# user-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-config
+data:
+  conf.yaml: |
+    # app/user/conf/dev/conf.yaml
+    server:
+      port: 8888
+    mysql:
+      host: gomall-mysql:3306
+      user: root
+      password: root
+      database: user

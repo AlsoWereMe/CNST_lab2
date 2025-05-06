@@ -1,0 +1,18 @@
+# frontend-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data:
+  conf.yaml: |
+    # frontend/conf/dev/conf.yaml
+    server:
+      port: 8080
+    services:
+      cart: cart:8883
+      checkout: checkout:8884
+      email: email:8885
+      order: order:8886
+      payment: payment:8887
+      product: product:8881
+      user: user:8888

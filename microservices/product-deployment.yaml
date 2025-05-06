@@ -1,0 +1,27 @@
+# product-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+      - name: product
+        image: huajuan6848/product:1ab2
+        ports:
+        - containerPort: 8881
+        volumeMounts:
+        - name: config
+          mountPath: /app/product/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: product-config

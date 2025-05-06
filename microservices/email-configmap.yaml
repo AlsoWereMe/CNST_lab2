@@ -1,0 +1,15 @@
+# email-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: email-config
+data:
+  conf.yaml: |
+    # app/email/conf/dev/conf.yaml
+    server:
+      port: 8885
+    smtp:
+      host: smtp.example.com
+      port: 587
+      username: user
+      password: pass

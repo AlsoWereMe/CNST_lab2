@@ -1,0 +1,15 @@
+# product-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-config
+data:
+  conf.yaml: |
+    # app/product/conf/dev/conf.yaml
+    server:
+      port: 8881
+    mysql:
+      host: gomall-mysql:3306
+      user: root
+      password: root
+      database: product

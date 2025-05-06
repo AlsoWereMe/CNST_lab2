@@ -1,0 +1,17 @@
+# cart-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cart-config
+data:
+  conf.yaml: |
+    # app/cart/conf/dev/conf.yaml
+    server:
+      port: 8883
+    mysql:
+      host: gomall-mysql:3306
+      user: root
+      password: root
+      database: cart
+    redis:
+      host: gomall-redis:6379

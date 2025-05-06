@@ -1,0 +1,27 @@
+# order-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+      - name: order
+        image: huajuan6848/order:1ab2
+        ports:
+        - containerPort: 8886
+        volumeMounts:
+        - name: config
+          mountPath: /app/order/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: order-config

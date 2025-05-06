@@ -1,0 +1,15 @@
+# payment-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-config
+data:
+  conf.yaml: |
+    # app/payment/conf/dev/conf.yaml
+    server:
+      port: 8887
+    mysql:
+      host: gomall-mysql:3306
+      user: root
+      password: root
+      database: payment

@@ -1,0 +1,17 @@
+# checkout-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checkout-config
+data:
+  conf.yaml: |
+    # app/checkout/conf/dev/conf.yaml
+    server:
+      port: 8884
+    mysql:
+      host: gomall-mysql:3306
+      user: root
+      password: root
+      database: checkout
+    nats:
+      host: gomall-nats:4222

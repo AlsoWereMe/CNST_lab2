@@ -1,17 +1,8 @@
-# email.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: email-config
-data:
-  conf.yaml: |
-    # email服务配置项...
-
----
+# email-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: email-deployment
+  name: email
 spec:
   replicas: 1
   selector:
@@ -28,22 +19,9 @@ spec:
         ports:
         - containerPort: 8885
         volumeMounts:
-        - name: config-volume
+        - name: config
           mountPath: /app/email/conf/dev
       volumes:
-      - name: config-volume
+      - name: config
         configMap:
           name: email-config
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: email
-spec:
-  selector:
-    app: email
-  ports:
-  - protocol: TCP
-    port: 8885
-    targetPort: 8885

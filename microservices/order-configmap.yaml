@@ -1,0 +1,15 @@
+# order-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-config
+data:
+  conf.yaml: |
+    # app/order/conf/dev/conf.yaml
+    server:
+      port: 8886
+    mysql:
+      host: gomall-mysql:3306
+      user: root
+      password: root
+      database: order
