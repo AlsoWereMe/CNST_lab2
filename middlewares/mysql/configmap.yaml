@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gomall-mysql-init
+data:
+  init.sql: |-
+    CREATE DATABASE IF NOT EXISTS `cart`
+        DEFAULT CHARACTER SET = 'utf8mb4';
+    CREATE DATABASE IF NOT EXISTS `checkout`
+        DEFAULT CHARACTER SET = 'utf8mb4';
+    CREATE DATABASE IF NOT EXISTS `order`
+        DEFAULT CHARACTER SET = 'utf8mb4';
+    CREATE DATABASE IF NOT EXISTS `payment`
+        DEFAULT CHARACTER SET = 'utf8mb4';
+    CREATE DATABASE IF NOT EXISTS `product`
+        DEFAULT CHARACTER SET = 'utf8mb4';
+    CREATE DATABASE IF NOT EXISTS `user`
+        DEFAULT CHARACTER SET = 'utf8mb4';

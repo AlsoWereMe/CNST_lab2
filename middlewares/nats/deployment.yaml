@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gomall-nats
+  labels:
+    app: gomall-nats
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gomall-nats
+  template:
+    metadata:
+      labels:
+        app: gomall-nats
+    spec:
+      containers:
+      - name: nats
+        image: nats:2.9-alpine
+        ports:
+        - containerPort: 4222
+        - containerPort: 8222
+        command: ["nats-server", "--config", "/etc/nats/nats-server.conf"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
