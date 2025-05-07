@@ -8,6 +8,11 @@ spec:
   selector:
     matchLabels:
       app: product
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1 # 更新过程中最多允许1个Pod不可用
+      maxSurge: 1       # 更新过程中最多允许1个新创建的Pod
   template:
     metadata:
       labels:
@@ -18,6 +23,16 @@ spec:
         image: huajuan6848/product:lab2
         ports:
         - containerPort: 8881
+        livenessProbe: # 定义健康检查
+          tcpSocket:
+            port: 8881
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe: # 定义就绪检查
+          tcpSocket:
+            port: 8881
+          initialDelaySeconds: 5
+          periodSeconds: 10
         volumeMounts:
         - name: config
           mountPath: /app/conf/dev
