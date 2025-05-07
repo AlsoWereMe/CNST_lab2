@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+spec:
+  replicas: {{ .Values.replicaCounts.checkout }}  # 参数化副本数
+  selector:
+    matchLabels:
+      app: checkout
+  template:
+    metadata:
+      labels:
+        app: checkout
+    spec:
+      containers:
+      - name: checkout
+        image: {{ .Values.checkout.image.repository }}:{{ .Values.checkout.image.tag | default "lab2" }}  # 参数化镜像
+        ports:
+        - containerPort: {{ .Values.checkout.servicePort | default 8884 }}  # 与 ConfigMap 端口一致
+        volumeMounts:
+        - name: config
+          mountPath: /app/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: checkout-config  # 保持固定，与 ConfigMap 名称一致

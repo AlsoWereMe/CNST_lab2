@@ -1,0 +1,19 @@
+# checkout-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMaps.checkout | default "checkout-config" }}
+data:
+  conf.yaml: |
+    kitex:
+      service: "{{ .Values.services.checkout.name | default "checkout" }}"
+      address: ":{{ .Values.services.checkout.port | default 8884 }}"
+      metrics_port: ":{{ .Values.services.checkout.metricsPort | default 9994 }}"
+      log_level: "{{ .Values.services.checkout.logLevel | default "info" }}"
+      log_file_name: "{{ .Values.services.checkout.logFileName | default "log/kitex.log" }}"
+      log_max_size: {{ .Values.services.checkout.logMaxSize | default 10 }}
+      log_max_age: {{ .Values.services.checkout.logMaxAge | default 3 }}
+      log_max_backups: {{ .Values.services.checkout.logMaxBackups | default 50 }}
+      
+    nats:
+      url: "{{ .Values.nats.url | default "nats://gomall-nats:4222" }}"

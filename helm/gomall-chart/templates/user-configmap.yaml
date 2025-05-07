@@ -1,0 +1,29 @@
+# user-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMaps.user | default "user-config" }}
+data:
+  conf.yaml: |
+    kitex:
+      service: "{{ .Values.services.user.name | default "user" }}"
+      address: ":{{ .Values.services.user.port | default 8882 }}"
+      metrics_port: ":{{ .Values.services.user.metricsPort | default 9992 }}"
+      log_level: "{{ .Values.services.user.logConfig.level | default "debug" }}"
+      log_file_name: "{{ .Values.services.user.logConfig.fileName | default "log/kitex.log" }}"
+      log_max_size: {{ .Values.services.user.logConfig.maxSize | default 10 }}
+      log_max_age: {{ .Values.services.user.logConfig.maxAge | default 3 }}
+      log_max_backups: {{ .Values.services.user.logConfig.backups | default 50 }}
+      
+    mysql:
+      dsn: "{{ .Values.mysql.dsn | default (printf "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local" .Values.mysql.username .Values.mysql.password .Values.mysql.address .Values.mysql.port .Values.services.user.database) }}"
+      username: "{{ .Values.mysql.username | default "root" }}"
+      password: "{{ .Values.mysql.password | default "root" }}"
+      address: "{{ .Values.mysql.address | default "gomall-mysql" }}"
+      port: {{ .Values.mysql.port | default 3306 }}
+      database: "{{ .Values.services.user.database | default "product" }}"  # [注意数据库名称差异]
+
+    rate_limiter:
+      enabled: {{ .Values.services.user.rateLimiter.enabled | default false }}
+      bucket_size: {{ .Values.services.user.rateLimiter.bucketSize | default 10 }}
+      rate: {{ .Values.services.user.rateLimiter.rate | default 5 }}

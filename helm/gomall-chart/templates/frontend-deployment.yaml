@@ -1,0 +1,27 @@
+# frontend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: {{ .Values.services.frontend.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: {{ .Values.services.frontend.image.repository | default "frontend-image" }}:{{ .Values.services.frontend.image.tag | default "lab2" }}
+        ports:
+        - containerPort: {{ .Values.services.frontend.port | default 8080 }}  # 与 ConfigMap 严格同步
+        volumeMounts:
+        - name: config
+          mountPath: /app/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.configMaps.frontend | default "frontend-config" }}

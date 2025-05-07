@@ -1,0 +1,27 @@
+# frontend-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMaps.frontend | default "frontend-config" }}
+data:
+  conf.yaml: |
+    hertz:
+      address: ":{{ .Values.services.frontend.port | default 8080 }}"
+      metrics_port: {{ .Values.services.frontend.metricsPort | default 8090 }}
+      enable_pprof: {{ .Values.services.frontend.featureFlags.enablePprof | default false }}
+      enable_gzip: {{ .Values.services.frontend.featureFlags.enableGzip | default true }}
+      enable_access_log: {{ .Values.services.frontend.featureFlags.enableAccessLog | default true }}
+      log_level: "{{ .Values.services.frontend.logConfig.level | default "info" }}"
+      log_file_name: "{{ .Values.services.frontend.logConfig.fileName | default "log/hertz.log" }}"
+      log_max_size: {{ .Values.services.frontend.logConfig.maxSize | default 10 }}
+      log_max_age: {{ .Values.services.frontend.logConfig.maxAge | default 3 }}
+      log_max_backups: {{ .Values.services.frontend.logConfig.backups | default 50 }}
+      registry_addr: "{{ .Values.registry.address | default "localhost:8500" }}"
+
+    redis:
+      address: "{{ .Values.redis.address | default "gomall-redis:6379" }}"
+      username: "{{ .Values.redis.username | default "" }}"
+      password: "{{ .Values.redis.password | default "" }}"
+      db: {{ .Values.redis.db | default 0 }}
+    
+    session_secret: "{{ .Values.services.frontend.sessionSecret | default "fudan2025" }}"

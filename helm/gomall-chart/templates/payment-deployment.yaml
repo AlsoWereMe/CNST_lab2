@@ -1,0 +1,27 @@
+# payment-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment
+spec:
+  replicas: {{ .Values.services.payment.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: payment
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+      - name: payment
+        image: {{ .Values.services.payment.image.repository | default "huajuan6848/payment" }}:{{ .Values.services.payment.image.tag | default "lab2" }}
+        ports:
+        - containerPort: {{ .Values.services.payment.port | default 8886 }}  # 与 ConfigMap 端口强制对齐
+        volumeMounts:
+        - name: config
+          mountPath: /app/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.configMaps.payment | default "payment-config" }}

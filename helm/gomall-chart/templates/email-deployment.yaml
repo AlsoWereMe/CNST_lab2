@@ -1,0 +1,27 @@
+# email-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email
+spec:
+  replicas: {{ .Values.services.email.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: email
+  template:
+    metadata:
+      labels:
+        app: email
+    spec:
+      containers:
+      - name: email
+        image: {{ .Values.services.email.image.repository | default "huajuan6848/email" }}:{{ .Values.services.email.image.tag | default "lab2" }}
+        ports:
+        - containerPort: {{ .Values.services.email.port | default 8888 }}  # 与 ConfigMap 端口保持同步
+        volumeMounts:
+        - name: config
+          mountPath: /app/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.configMaps.email | default "email-config" }}

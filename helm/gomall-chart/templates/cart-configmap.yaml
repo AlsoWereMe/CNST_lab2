@@ -1,0 +1,22 @@
+# cart-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cart-config
+data:
+  conf.yaml: |
+    kitex:
+      service: "{{ .Values.services.cart.name | default "cart" }}"
+      address: ":{{ .Values.services.cart.port | default 8883 }}"
+      metrics_port: ":{{ .Values.services.cart.metricsPort | default 9993 }}"
+      log_level: "{{ .Values.services.cart.logLevel | default "info" }}"
+      log_file_name: "{{ .Values.services.cart.logFileName | default "log/kitex.log" }}"
+
+    mysql:
+      dsn: "{{ .Values.mysql.dsn | default (printf "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local" .Values.mysql.username .Values.mysql.password .Values.mysql.address .Values.mysql.port .Values.services.cart.database) }}"
+      address: "{{ .Values.mysql.address | default "gomall-mysql" }}"
+      port: {{ .Values.mysql.port | default 3306 }}
+      database: "{{ .Values.services.cart.database | default "cart" }}"  # 服务专属配置
+
+    rate_limiter:
+      rate: "{{ .Values.services.cart.rateLimiter.rate | default 7 }}"  # 服务专属配置

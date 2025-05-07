@@ -1,0 +1,308 @@
+# Default values for gomall-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: nginx
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 80
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# values.yaml
+### 中间件配置 (顶层)
+mysql:
+  address: gomall-mysql  # [中间件地址]
+  port: 3306
+  username: root
+  password: root
+
+nats:
+  url: nats://gomall-nats:4222  # [中间件地址]
+
+redis:
+  address: gomall-redis:6379  # [中间件地址]
+  username: ""
+  password: ""
+  db: 0
+
+registry:
+  address: localhost:8500
+
+deployment:
+  strategy:
+    type: RollingUpdate          # [部署策略类型]
+    rollingUpdate:
+      maxUnavailable: 1         # [最大不可用Pod数]
+      maxSurge: 1  
+
+probes:
+  liveness:
+    initialDelay: 5             # [存活探针初始延迟]
+    interval: 10                # [存活探针检查间隔]
+  readiness:
+    initialDelay: 5             # [就绪探针初始延迟]
+    interval: 10                # [就绪探针检查间隔]
+
+### 服务配置
+services:
+  # 购物车服务
+  cart:
+    name: cart
+    port: 8883                   # [服务端口]
+    metricsPort: 9993
+    replicaCount: 1              # [副本数]
+    database: cart               # [独立数据库]
+    rateLimiter:
+      rate: 7                    # [独立限流值]
+    image:
+      repository: cart-image     # [镜像仓库]
+      tag: lab2                  # [镜像标签]
+    logConfig:
+      level: info
+      fileName: "log/kitex.log"
+      maxSize: 10
+      maxAge: 3
+      backups: 50
+
+  # 结账服务
+  checkout:
+    name: checkout
+    port: 8884                   # [服务端口]
+    metricsPort: 9994
+    replicaCount: 1
+    image:
+      repository: huajuan6848/checkout  # [镜像仓库]
+      tag: lab2                   # [镜像标签]
+    logConfig:
+      level: info
+      fileName: "log/kitex.log"
+      maxSize: 10
+      maxAge: 3
+      backups: 50
+  
+  frontend:
+    replicaCount: 1                   # [新增副本数]
+    image:
+      repository: frontend-image      # [镜像仓库]
+      tag: lab2    
+    port: 8080             # [服务端口]
+    metricsPort: 8090      # [监控端口]
+    featureFlags:
+      enablePprof: false   # [调试功能开关]
+      enableGzip: true     # [响应压缩]
+      enableAccessLog: true # [访问日志]
+    logConfig:
+      level: info
+      fileName: "log/hertz.log"
+      maxSize: 10
+      maxAge: 3
+      backups: 50
+    sessionSecret: fudan2025  # [敏感配置]
+
+  order:                      # 新增服务节点
+    name: order
+    port: 8885                # [服务端口]
+    metricsPort: 9995
+    database: order           # [独立数据库]
+    logConfig:
+      level: info
+      fileName: "log/kitex.log"
+      maxSize: 10
+      maxAge: 3
+      backups: 50
+    rateLimiter:
+      enabled: true
+      bucketSize: 10
+      rate: 4
+    replicaCount: 1                   # [新增副本数]
+    image:
+      repository: huajuan6848/order   # [镜像仓库]
+      tag: lab2
+
+  payment:                     # 新增支付服务
+    name: payment
+    port: 8886                 # [服务端口]
+    metricsPort: 9996
+    database: product          # [特别注意数据库名称差异]
+    logConfig:
+      level: info
+      fileName: "log/kitex.log"
+      maxSize: 10
+      maxAge: 3
+      backups: 50
+    rateLimiter:
+      enabled: true
+      bucketSize: 10
+      rate: 3
+    replicaCount: 1                   # [新增副本数]
+    image:
+      repository: huajuan6848/payment # [镜像仓库]
+      tag: lab2 
+
+  product:                     # 新增商品服务
+    name: product
+    port: 8881                 # [服务端口]
+    metricsPort: 9991
+    database: product          # [注意与payment服务共用数据库]
+    logConfig:
+      level: info
+      fileName: "log/kitex.log"
+      maxSize: 10
+      maxAge: 3
+      backups: 50
+    rateLimiter:
+      enabled: true
+      bucketSize: 10
+      rate: 10
+    replicaCount: 1              # [新增副本数]
+    image:
+      repository: huajuan6848/product  # [镜像仓库]
+      tag: lab2
+
+  user:                        # 新增用户服务
+    name: user
+    port: 8882                 # [服务端口]
+    metricsPort: 9992
+    database: product          # [特殊注意共用数据库]
+    logConfig:
+      level: debug             # [唯一使用debug级别]
+      fileName: "log/kitex.log"
+      maxSize: 10
+      maxAge: 3
+      backups: 50
+    rateLimiter:
+      enabled: false           # [默认关闭限流]
+      bucketSize: 10
+      rate: 5
+    replicaCount: 1                   # [新增副本数]
+    image:
+      repository: huajuan6848/user    # [镜像仓库]
+      tag: lab2
+               
+ 
+
+
+### 配置映射关系 (顶层)
+configMaps:
+  cart: cart-config             # [与Deployment联动]
+  checkout: checkout-config     # [与Deployment联动]
+  frontend: frontend-config
+  order: order-config 
+  email: email-config
+  payment: payment-config
+  product: product-config
+  user: user-config        

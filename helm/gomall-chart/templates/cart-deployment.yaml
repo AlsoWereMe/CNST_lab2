@@ -1,0 +1,27 @@
+# cart-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart
+spec:
+  replicas: {{ .Values.services.cart.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: cart
+  template:
+    metadata:
+      labels:
+        app: cart
+    spec:
+      containers:
+      - name: cart
+        image: {{ .Values.services.cart.image.repository | default "cart-image" }}:{{ .Values.services.cart.image.tag | default "lab2" }}
+        ports:
+        - containerPort: {{ .Values.services.cart.port | default 8883 }}  # 与 ConfigMap 端口联动
+        volumeMounts:
+        - name: config
+          mountPath: /app/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.configMaps.cart | default "cart-config" }}

@@ -1,0 +1,18 @@
+# email-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMaps.email | default "email-config" }}
+data:
+  conf.yaml: |
+    kitex:
+      service: "{{ .Values.services.email.name | default "email" }}"
+      address: ":{{ .Values.services.email.port | default 8888 }}"
+      log_level: "{{ .Values.services.email.logConfig.level | default "info" }}"
+      log_file_name: "{{ .Values.services.email.logConfig.fileName | default "log/kitex.log" }}"
+      log_max_size: {{ .Values.services.email.logConfig.maxSize | default 10 }}
+      log_max_age: {{ .Values.services.email.logConfig.maxAge | default 3 }}
+      log_max_backups: {{ .Values.services.email.logConfig.backups | default 50 }}
+
+    nats:
+      url: "{{ .Values.nats.url | default "nats://gomall-nats:4222" }}"

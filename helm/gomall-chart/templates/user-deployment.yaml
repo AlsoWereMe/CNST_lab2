@@ -1,0 +1,27 @@
+# user-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+spec:
+  replicas: {{ .Values.services.user.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user
+        image: {{ .Values.services.user.image.repository | default "huajuan6848/user" }}:{{ .Values.services.user.image.tag | default "lab2" }}
+        ports:
+        - containerPort: {{ .Values.services.user.port | default 8882 }}  # 与 ConfigMap 端口严格对齐
+        volumeMounts:
+        - name: config
+          mountPath: /app/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.configMaps.user | default "user-config" }}

@@ -1,0 +1,42 @@
+# product-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+spec:
+  replicas: {{ .Values.services.product.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: product
+  strategy:
+    type: {{ .Values.deployment.strategy.type | default "RollingUpdate" }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.deployment.strategy.rollingUpdate.maxUnavailable | default 1 }}
+      maxSurge: {{ .Values.deployment.strategy.rollingUpdate.maxSurge | default 1 }}
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+      - name: product
+        image: {{ .Values.services.product.image.repository | default "huajuan6848/product" }}:{{ .Values.services.product.image.tag | default "lab2" }}
+        ports:
+        - containerPort: {{ .Values.services.product.port | default 8881 }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.services.product.port | default 8881 }}  # 端口联动
+          initialDelaySeconds: {{ .Values.probes.liveness.initialDelay | default 5 }}
+          periodSeconds: {{ .Values.probes.liveness.interval | default 10 }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.services.product.port | default 8881 }}  # 端口联动
+          initialDelaySeconds: {{ .Values.probes.readiness.initialDelay | default 5 }}
+          periodSeconds: {{ .Values.probes.readiness.interval | default 10 }}
+        volumeMounts:
+        - name: config
+          mountPath: /app/conf/dev
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.configMaps.product | default "product-config" }}
