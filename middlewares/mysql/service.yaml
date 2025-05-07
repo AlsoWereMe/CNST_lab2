@@ -5,11 +5,10 @@ metadata:
   labels:
     app: gomall-mysql
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: gomall-mysql
   ports:
     - protocol: TCP
       port: 3306
       targetPort: 3306
-      nodePort: 31306

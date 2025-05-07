@@ -20,7 +20,7 @@ spec:
         - containerPort: 8080
         volumeMounts:
         - name: config
-          mountPath: /frontend/conf/dev
+          mountPath: /app/conf/dev
       volumes:
       - name: config
         configMap:

@@ -5,11 +5,10 @@ metadata:
   labels:
     app: gomall-redis
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: gomall-redis
   ports:
     - protocol: TCP
       port: 6379
       targetPort: 6379
-      nodePort: 31637

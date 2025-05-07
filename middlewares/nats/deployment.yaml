@@ -16,11 +16,10 @@ spec:
     spec:
       containers:
       - name: nats
-        image: nats:2.9-alpine
+        image: nats:latest
         ports:
         - containerPort: 4222
         - containerPort: 8222
-        command: ["nats-server", "--config", "/etc/nats/nats-server.conf"]
         resources:
           requests:
             memory: "128Mi"

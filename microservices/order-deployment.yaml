@@ -20,7 +20,7 @@ spec:
         - containerPort: 8886
         volumeMounts:
         - name: config
-          mountPath: /app/order/conf/dev
+          mountPath: /app/conf/dev
       volumes:
       - name: config
         configMap:
