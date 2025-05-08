@@ -1,4 +1,3 @@
-# cart-config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,17 +5,24 @@ metadata:
 data:
   conf.yaml: |
     kitex:
-      service: "{{ .Values.services.cart.name | default "cart" }}"
-      address: ":{{ .Values.services.cart.port | default 8883 }}"
-      metrics_port: ":{{ .Values.services.cart.metricsPort | default 9993 }}"
-      log_level: "{{ .Values.services.cart.logLevel | default "info" }}"
-      log_file_name: "{{ .Values.services.cart.logFileName | default "log/kitex.log" }}"
+      service: "{{ .Values.services.cart.name }}"
+      address: ":{{ .Values.services.cart.port }}"
+      metrics_port: ":{{ .Values.services.cart.metricsPort }}"
+      log_level: {{ .Values.services.cart.logConfig.level | quote }}
+      log_file_name: {{ .Values.services.cart.logConfig.fileName | quote }}
+      log_max_size: {{ .Values.services.cart.logConfig.maxSize }}
+      log_max_age: {{ .Values.services.cart.logConfig.maxAge }}
+      log_max_backups: {{ .Values.services.cart.logConfig.backups }}
 
     mysql:
-      dsn: "{{ .Values.mysql.dsn | default (printf "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local" .Values.mysql.username .Values.mysql.password .Values.mysql.address .Values.mysql.port .Values.services.cart.database) }}"
-      address: "{{ .Values.mysql.address | default "gomall-mysql" }}"
-      port: {{ .Values.mysql.port | default 3306 }}
-      database: "{{ .Values.services.cart.database | default "cart" }}"  # 服务专属配置
-
+      dsn: "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local"
+      address: {{ .Values.mysql.address | quote }}  # 关键修复点
+      port: {{ .Values.mysql.port }}
+      username: {{ .Values.mysql.username | quote }}
+      password: {{ .Values.mysql.password | quote }}
+      database: {{ .Values.mysql.database | quote }}
+      
     rate_limiter:
-      rate: "{{ .Values.services.cart.rateLimiter.rate | default 7 }}"  # 服务专属配置
+      enabled: {{ .Values.services.cart.rateLimiter.enabled }}
+      bucket_size: {{ .Values.services.cart.rateLimiter.bucket_size }}
+      rate: {{ .Values.services.cart.rateLimiter.rate }}

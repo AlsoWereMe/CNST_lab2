@@ -16,12 +16,12 @@ data:
       log_max_backups: {{ .Values.services.payment.logConfig.backups | default 50 }}
       
     mysql:
-      dsn: "{{ .Values.mysql.dsn | default (printf "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local" .Values.mysql.username .Values.mysql.password .Values.mysql.address .Values.mysql.port .Values.services.payment.database) }}"
-      username: "{{ .Values.mysql.username | default "root" }}"
-      password: "{{ .Values.mysql.password | default "root" }}"
-      address: "{{ .Values.mysql.address | default "gomall-mysql" }}"
-      port: {{ .Values.mysql.port | default 3306 }}
-      database: "{{ .Values.services.payment.database | default "product" }}"  # 特别注意数据库名称
+      dsn: "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local"
+      address: {{ .Values.mysql.address | quote }}
+      port: {{ .Values.mysql.port }}
+      username: {{ .Values.mysql.username | quote }}
+      password: {{ .Values.mysql.password | quote }}
+      database: {{ .Values.services.payment.database | quote }}  # 服务独立数据库
 
     rate_limiter:
       enabled: {{ .Values.services.payment.rateLimiter.enabled | default true }}

@@ -1,9 +1,10 @@
+# checkout-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: checkout
 spec:
-  replicas: {{ .Values.replicaCounts.checkout }}  # 参数化副本数
+  replicas: {{ .Values.services.checkout.replicaCount | default 1 }}
   selector:
     matchLabels:
       app: checkout
@@ -14,13 +15,13 @@ spec:
     spec:
       containers:
       - name: checkout
-        image: {{ .Values.checkout.image.repository }}:{{ .Values.checkout.image.tag | default "lab2" }}  # 参数化镜像
+        image: {{ .Values.services.checkout.image.repository | default "huajuan6848/checkout" }}:{{ .Values.services.checkout.image.tag | default "lab2" }}
         ports:
-        - containerPort: {{ .Values.checkout.servicePort | default 8884 }}  # 与 ConfigMap 端口一致
+        - containerPort: {{ .Values.services.checkout.port | default 8884 }}  # 与 ConfigMap 端口联动
         volumeMounts:
         - name: config
           mountPath: /app/conf/dev
       volumes:
       - name: config
         configMap:
-          name: checkout-config  # 保持固定，与 ConfigMap 名称一致
+          name: {{ .Values.configMaps.checkout | default "checkout-config" }}

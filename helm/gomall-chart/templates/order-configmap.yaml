@@ -16,12 +16,12 @@ data:
       log_max_backups: {{ .Values.services.order.logConfig.backups | default 50 }}
 
     mysql:
-      dsn: "{{ .Values.mysql.dsn | default (printf "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local" .Values.mysql.username .Values.mysql.password .Values.mysql.address .Values.mysql.port .Values.services.order.database) }}"
-      address: "{{ .Values.mysql.address | default "gomall-mysql" }}"
-      port: {{ .Values.mysql.port | default 3306 }}
-      username: "{{ .Values.mysql.username | default "root" }}"
-      password: "{{ .Values.mysql.password | default "root" }}"
-      database: "{{ .Values.services.order.database | default "order" }}"  # 服务独立数据库
+      dsn: "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local"
+      address: {{ .Values.mysql.address | quote }}
+      port: {{ .Values.mysql.port }}
+      username: {{ .Values.mysql.username | quote }}
+      password: {{ .Values.mysql.password | quote }}
+      database: {{ .Values.services.order.database | quote }}  # 服务独立数据库
 
     redis:
       address: "{{ .Values.redis.address | default "gomall-redis:6379" }}"

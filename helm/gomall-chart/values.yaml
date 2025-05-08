@@ -167,9 +167,11 @@ services:
     replicaCount: 1              # [副本数]
     database: cart               # [独立数据库]
     rateLimiter:
+      enabled: true
+      bucket_size: 10
       rate: 7                    # [独立限流值]
     image:
-      repository: cart-image     # [镜像仓库]
+      repository: huajuan6848/cart     # [镜像仓库]
       tag: lab2                  # [镜像标签]
     logConfig:
       level: info
@@ -193,11 +195,25 @@ services:
       maxSize: 10
       maxAge: 3
       backups: 50
+
+  email:
+    name: email                 # [服务名称]
+    port: 8888                  # [服务端口]
+    logConfig:
+      level: info               # [日志级别]
+      fileName: "log/kitex.log" # [日志文件]
+      maxSize: 10               # [日志切割大小]
+      maxAge: 3                 # [日志保留天数]
+      backups: 50
+    replicaCount: 1                   # [新增副本数配置]
+    image:
+      repository: huajuan6848/email   # [新增镜像仓库]
+      tag: lab2
   
   frontend:
     replicaCount: 1                   # [新增副本数]
     image:
-      repository: frontend-image      # [镜像仓库]
+      repository: huajuan6848/frontend      # [镜像仓库]
       tag: lab2    
     port: 8080             # [服务端口]
     metricsPort: 8090      # [监控端口]
